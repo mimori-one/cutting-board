@@ -1,6 +1,14 @@
 <template>
     <div class="m-4 w-full flex">
         <div class="w-1/2 space-y-2">
+            <select v-model="sizeSelect" @change="selectCutSize" class="select select-bordered">
+                <option v-for="size in CUT_SIZE_LIST" :value="size">{{ size.label }}</option>
+            </select>
+            <div v-if="sizeSelect.label === 'カスタム'">
+                <input type="number" placeholder="タテ" class="input input-bordered w-24" v-model="size.width" /> mm x
+                <input type="number" placeholder="ヨコ" class="input input-bordered w-24" v-model="size.height"/> mm
+                ※長い方の数値を左に入れる
+            </div>
             <div class="flex items-center">
                 <div class="mr-2">X(左からの横位置)</div>
                 <input v-model="f_x" type="number" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
@@ -117,6 +125,26 @@ const sampleFacts = [
     }
 ]
 
+const CUT_SIZE_LIST = [
+    {
+        label: 'B6(デフォルト) 182x128',
+        x: 182,
+        y: 128
+    },
+    {
+        label: 'A5 210x148',
+        x: 210,
+        y: 148
+    },
+    {
+        label: 'カスタム',
+        x: 0,
+        y: 0
+    },
+]
+
+const sizeSelect = ref(CUT_SIZE_LIST[0])
+
 const facts = ref([])
 
 const size = ref({
@@ -144,6 +172,13 @@ const f_x = ref(0)
 const f_y = ref(0)
 
 const tandeTime = ref(0)
+
+const selectCutSize = () => {
+    size.value = {
+        width: sizeSelect.value.x,
+        height: sizeSelect.value.y
+    }
+}
 
 const setSampleFact = () => {
     sampleFacts.forEach((value)=> {
